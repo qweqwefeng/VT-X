@@ -1,0 +1,62 @@
+;
+; Unreal.inf
+;
+
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = System ; TODO: specify appropriate Class
+ClassGuid   = {4d36e97d-e325-11ce-bfc1-08002be10318} ; TODO: specify appropriate ClassGuid
+Provider    = %ManufacturerName%
+CatalogFile = Unreal.cat
+DriverVer   = ; TODO: set DriverVer in stampinf property pages
+PnpLockdown = 1
+
+[DestinationDirs]
+DefaultDestDir = 13
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+Unreal.sys = 1,,
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName% = Standard,NT$ARCH$.10.0...16299 ; %13% support introduced in build 16299
+
+[Standard.NT$ARCH$.10.0...16299]
+%Unreal.DeviceDesc% = Unreal_Device, Root\Unreal ; TODO: edit hw-id
+
+[Unreal_Device.NT]
+CopyFiles = File_Copy
+
+[File_Copy]
+Unreal.sys
+
+;-------------- Service installation
+[Unreal_Device.NT.Services]
+AddService = Unreal,%SPSVCINST_ASSOCSERVICE%, Unreal_Service_Inst
+
+; -------------- Unreal driver install sections
+[Unreal_Service_Inst]
+DisplayName    = %Unreal.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %13%\Unreal.sys
+
+[Unreal_Device.NT.Wdf]
+KmdfService = Unreal, Unreal_wdfsect
+
+[Unreal_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE = 0x00000002
+ManufacturerName = "<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+DiskName = "Unreal Installation Disk"
+Unreal.DeviceDesc = "Unreal Device"
+Unreal.SVCDESC = "Unreal Service"
